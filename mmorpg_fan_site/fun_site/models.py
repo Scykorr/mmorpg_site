@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 class Category(models.Model):
     tank = 'TNK'
@@ -27,10 +29,31 @@ class Category(models.Model):
     ]
     category = models.CharField(max_length=8, choices=TYPES, default=dd)
 
+
 class Person(models.Model):
-    pass
+    percon = models.OneToOneField(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.percon.username
+
+
 class Post(models.Model):
-    pass
+    text = models.TextField()
+    create_date = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=255, default='***')
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.title.title()}: {self.text[:15]}...'
+
+    def preview(self):
+        return f'{self.text[:124]}...'
+
 
 class Comment(models.Model):
-    pass
+    text = models.TextField()
+    is_fix = models.BooleanField()
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    create_date = models.DateTimeField(auto_now_add=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
