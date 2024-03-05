@@ -176,8 +176,7 @@ CKEDITOR_CONFIGS = {
                 # put the name of your editor.ui.addButton here
                 'Preview',
                 'Maximize',
-                'Youtube',
-                'Video'
+                'Youtube'
 
             ]},
         ],
@@ -205,8 +204,7 @@ CKEDITOR_CONFIGS = {
             'dialog',
             'dialogui',
             'elementspath',
-            'youtube',
-            'video'
+            'youtube'
         ]),
     }
 }
