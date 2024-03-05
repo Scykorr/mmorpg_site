@@ -30,7 +30,7 @@ class Category(models.Model):
     category = models.CharField(max_length=8, choices=TYPES, default=dd)
 
     def __str__(self) -> str:
-        return self.category
+        return self.get_category_display()
 
 
 class Person(models.Model):
