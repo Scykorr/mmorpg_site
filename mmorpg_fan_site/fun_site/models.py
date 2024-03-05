@@ -29,13 +29,16 @@ class Category(models.Model):
     ]
     category = models.CharField(max_length=8, choices=TYPES, default=dd)
 
+    def __str__(self) -> str:
+        return self.category
+
 
 class Person(models.Model):
-    percon = models.OneToOneField(User, on_delete=models.CASCADE)
+    person = models.OneToOneField(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return self.percon.username
+        return self.person.username
 
 
 class Post(models.Model):
