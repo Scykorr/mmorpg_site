@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from .models import Post
 
 
@@ -9,3 +9,13 @@ class PostsList(ListView):
     ordering = 'create_date'
     template_name = 'posts.html'
     context_object_name = 'posts'
+    """
+    -create_date' - обратная сортировка
+    queryset = Products.objects.filter(price__lt=300) цена меньше чем 300 вместо ordering
+    """
+
+
+class PostDetail(DetailView):
+    model = Post
+    template_name = 'post.html'
+    context_object_name = 'post'
