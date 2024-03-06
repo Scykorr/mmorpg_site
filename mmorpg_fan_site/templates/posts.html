@@ -10,8 +10,10 @@
  
 
 {% block content %}
-    <h1>Все посты</h1>
+    <h1>Great Wall</h1>
     <h2>{{ attention }}</h2>
+    <h2> Не можешь молчать? Поделись своими мыслями! </h2>
+    <h4> Bottom </h4>
     <h3>{% current_time '%m/%d/%Y, %H:%M:%S' %}</h3>
     {% if posts%}
     <table>
@@ -21,6 +23,7 @@
             <td>Автор</td>
             <td>Класс автора</td>
             <td>Дата создания</td>
+            <td></td>
         </tr>
 
         {% for post in posts %}
@@ -30,6 +33,7 @@
             <td>{{ post.person|safe }}</td>
             <td>{{ post.person.category|safe }}</td>
             <td>{{ post.create_date|safe }}</td>
+            <td><p>Оставить комментарий</p></td>
         </tr>
         {% endfor %}
 

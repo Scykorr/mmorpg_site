@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from ckeditor_uploader.fields import RichTextUploadingField
 
 
 class Category(models.Model):
@@ -42,7 +43,7 @@ class Person(models.Model):
 
 
 class Post(models.Model):
-    text = models.TextField()
+    text = RichTextUploadingField()
     create_date = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=255, default='***')
     person = models.ForeignKey(Person, on_delete=models.CASCADE)

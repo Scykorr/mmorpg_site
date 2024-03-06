@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'fun_site',
     'ckeditor',
     'ckeditor_uploader',
+    'django_filters'
 ]
 
 SITE_ID = 1
@@ -135,7 +136,12 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+# CKEDITOR_BASEPATH = 'static/ckeditor/ckeditor/'
+
 CKEDITOR_UPLOAD_PATH = 'uploads/'
+
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
 
 CKEDITOR_CONFIGS = {
@@ -176,7 +182,8 @@ CKEDITOR_CONFIGS = {
                 # put the name of your editor.ui.addButton here
                 'Preview',
                 'Maximize',
-                'Youtube'
+                'Youtube',
+                'Html5video',
 
             ]},
         ],
@@ -204,7 +211,8 @@ CKEDITOR_CONFIGS = {
             'dialog',
             'dialogui',
             'elementspath',
-            'youtube'
+            'youtube',
+            'html5video',
         ]),
     }
 }
