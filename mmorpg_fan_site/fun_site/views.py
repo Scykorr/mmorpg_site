@@ -1,10 +1,12 @@
 from datetime import datetime
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
 
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 from .forms import PostForm
 from .models import Post
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
 class PostsList(ListView):
@@ -32,13 +34,25 @@ class PostDetail(DetailView):
     context_object_name = 'post'
 
 
-def create_post(request):
-    form = PostForm()
 
-    if request.method == 'POST':
-        form = PostForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/posts/')
+# @login_required
+# def create_post(request):
+#     form = PostForm()
+    
+#     if request.method == 'POST':
+#         form = PostForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponseRedirect('/posts/')
 
-    return render(request, 'post_edit.html', {'form': form})
+#     return render(request, 'post_edit.html', {'form': form})
+
+class PostCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('post.add_post',)
+    raise_exception = True
+    form_class = PostForm
+    model = Post
+    template_name = 'post_edit.html'
+
+    def get_success_url(self):
+        return reverse('lawyer_detail', kwargs={'lawyer_slug': self.object.lawyer_slug})
