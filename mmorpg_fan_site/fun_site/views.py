@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from django.views.generic import ListView, DetailView
@@ -33,4 +34,11 @@ class PostDetail(DetailView):
 
 def create_post(request):
     form = PostForm()
+
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/posts/')
+
     return render(request, 'post_edit.html', {'form': form})
