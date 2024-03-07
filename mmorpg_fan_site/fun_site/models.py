@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.urls import reverse
 
 
 class Category(models.Model):
@@ -53,6 +54,9 @@ class Post(models.Model):
 
     def preview(self):
         return f'{self.text[:124]}...'
+
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.pk)])
 
 
 class Comment(models.Model):

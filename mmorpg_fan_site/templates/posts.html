@@ -12,8 +12,7 @@
 {% block content %}
     <h1>Great Wall</h1>
     <h2>{{ attention }}</h2>
-    <h2> Не можешь молчать? Поделись своими мыслями! </h2>
-    <h4> Bottom </h4>
+    <h2><a href="/posts/create">Не можешь молчать? Поделись своими мыслями!</a></h2>
     <h3>{% current_time '%m/%d/%Y, %H:%M:%S' %}</h3>
     {% if posts%}
     <table>

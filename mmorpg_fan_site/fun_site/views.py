@@ -34,11 +34,11 @@ class PostDetail(DetailView):
     context_object_name = 'post'
 
 
-
 # @login_required
 # def create_post(request):
+
 #     form = PostForm()
-    
+
 #     if request.method == 'POST':
 #         form = PostForm(request.POST)
 #         if form.is_valid():
@@ -54,5 +54,8 @@ class PostCreate(PermissionRequiredMixin, CreateView):
     model = Post
     template_name = 'post_edit.html'
 
-    def get_success_url(self):
-        return reverse('lawyer_detail', kwargs={'lawyer_slug': self.object.lawyer_slug})
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    # def get_success_url(self):
+    #     return reverse('lawyer_detail', kwargs={'lawyer_slug': self.object.lawyer_slug})
