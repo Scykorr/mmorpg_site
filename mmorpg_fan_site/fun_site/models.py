@@ -17,16 +17,16 @@ class Category(models.Model):
     wizard = 'WZRD'
 
     TYPES = [
-        ('TNK', 'Танк'),
-        ('HL', 'Хил'),
+        ('TNK', 'Танки'),
+        ('HL', 'Хилы'),
         ('DD', 'ДД'),
-        ('MRCHNT', 'Торговец'),
-        ('GLDMSTR', 'Гильдмастер'),
-        ('QSTGVR', 'Квестгивер'),
-        ('BLCKSMTH', 'Кузнец'),
-        ('TNNR', 'Кожевник'),
-        ('PTNMSTR', 'Зельевар'),
-        ('WZRD', 'Мастер заклинаний')
+        ('MRCHNT', 'Торговцы'),
+        ('GLDMSTR', 'Гильдмастеры'),
+        ('QSTGVR', 'Квестгиверы'),
+        ('BLCKSMTH', 'Кузнецы'),
+        ('TNNR', 'Кожевники'),
+        ('PTNMSTR', 'Зельевары'),
+        ('WZRD', 'Мастера заклинаний'),
 
     ]
     category = models.CharField(max_length=8, choices=TYPES, default=dd)
@@ -37,7 +37,6 @@ class Category(models.Model):
 
 class Person(models.Model):
     person = models.OneToOneField(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.person.username
@@ -48,6 +47,7 @@ class Post(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=255, default='***')
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f'{self.title.title()}: {self.text[:15]}...'

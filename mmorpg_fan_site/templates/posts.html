@@ -30,7 +30,7 @@
             <td><a href="/posts/{{ post.pk }}">{{ post.title|safe }}</a></td>
             <td>{{ post.text|safe }}</td>
             <td>{{ post.person|safe }}</td>
-            <td>{{ post.person.category|safe }}</td>
+            <td>{{ post.category|safe }}</td>
             <td>{{ post.create_date|safe }}</td>
             <td><p>Оставить комментарий</p></td>
         </tr>
