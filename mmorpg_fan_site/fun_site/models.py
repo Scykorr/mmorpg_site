@@ -60,8 +60,12 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    text = RichTextUploadingField()
+    text = models.TextField()
     is_fix = models.BooleanField(default=False)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     create_date = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.post.pk)])
+

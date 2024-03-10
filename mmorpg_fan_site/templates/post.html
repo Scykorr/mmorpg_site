@@ -20,7 +20,21 @@
             <tr><p>Автор: {{ post.person|safe }}</p></tr>
             <tr><p>Категория объявления: {{ post.category|safe }}</p></tr>
             <tr><p>Дата создания: {{ post.create_date|safe }}</p></tr>
-            <tr><p>Оставить комментарий</p></tr>
+            <tr><p><a href="{{ post.pk }}/comment/">Оставить комментарий</a></p></tr>
+            <tr><p>Комментарии</p></tr>
+            <hr>
+            {% for comment in comments %}
+            <tr><p>{{ comment.person|safe }}</p></tr>
+            <tr><p>{{ comment.text|safe }}</p></tr>
+            <tr><p>{{ comment.create_date|safe }}</p></tr>
+            <hr>
+                {% comment %} <tr><a href="/posts/{{ post.pk }}">{{ post.title|safe }}</a></tr>
+                <tr>{{ post.text|safe }}</tr>
+                <tr><p>Автор: {{ post.person|safe }}</p></tr>
+                <tr><p>Категория объявления: {{ post.category|safe }}</p></tr>
+                <tr><p>Дата создания: {{ post.create_date|safe }}</p></tr>
+                <tr><p><a href="{{ post.pk }}/comment/">Оставить комментарий</a></p></tr> {% endcomment %}
+            {% endfor %}
     </table>
     {% else %}
         <h2>

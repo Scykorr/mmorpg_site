@@ -33,6 +33,13 @@ class PostDetail(DetailView):
     template_name = 'post.html'
     context_object_name = 'post'
 
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        comments = Comment.objects.filter(post_id=self.kwargs['pk'])
+        context['comments'] = comments
+        return context
+
 
 class PostCreate(LoginRequiredMixin, CreateView):
     form_class = PostForm
@@ -42,8 +49,7 @@ class PostCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         if self.request.method == 'POST':
-             #form.instance.created_by = Person.objects.get(pk=self.request.user.pk)
-             #form.instance.created_by = self.request.user.pk
+             
              post.person_id = self.request.user.pk
         post.save()
         return super().form_valid(form)
@@ -73,4 +79,10 @@ class CommentCreate(PermissionRequiredMixin, CreateView):
     template_name = 'comment_update.html'
 
     def form_valid(self, form):
+        comment = form.save(commit=False)
+        if self.request.method == 'POST':
+             comment.person_id = self.request.user.pk
+             comment.post_id = self.kwargs['pk']
+        comment.save()
         return super().form_valid(form)
+    
