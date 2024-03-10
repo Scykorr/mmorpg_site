@@ -12,7 +12,9 @@
 {% block content %}
     <h1>Great Wall</h1>
     <h2>{{ attention }}</h2>
-    <h2><a href="/posts/create">Не можешь молчать? Поделись своими мыслями!</a></h2>
+    {% if perms.simpleapp.add_product %}
+        <h2><a href="/posts/create">Не можешь молчать? Поделись своими мыслями!</a></h2>
+    {% endif %}
     <h3>{% current_time '%m/%d/%Y, %H:%M:%S' %}</h3>
     {% if posts%}
     <table>

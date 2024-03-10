@@ -1,9 +1,9 @@
 from datetime import datetime
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .forms import PostForm
 from .models import Post
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -52,10 +52,23 @@ class PostCreate(PermissionRequiredMixin, CreateView):
     raise_exception = True
     form_class = PostForm
     model = Post
-    template_name = 'post_edit.html'
+    template_name = 'post_update.html'
 
     def form_valid(self, form):
         return super().form_valid(form)
 
     # def get_success_url(self):
     #     return reverse('lawyer_detail', kwargs={'lawyer_slug': self.object.lawyer_slug})
+
+class PostUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('post.change_post',)
+    form_class = PostForm
+    model = Post
+    template_name = 'post_update.html'
+
+
+class PostDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('post.delete_post',)
+    model = Post
+    template_name = 'post_delete.html'
+    success_url = reverse_lazy('post_list')

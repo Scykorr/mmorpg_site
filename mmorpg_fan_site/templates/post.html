@@ -1,5 +1,6 @@
 {% extends "flatpages/default.html" %}
 
+{% load custom_tags %}
 
 <!-- Название у нас будет products -->
 {% block title %}
@@ -9,5 +10,31 @@
 <!-- В контенте на странице мы выводим все товары -->
 {% block content %}
 <h1>Отдельный пост</h1>
-{{ post|safe }}
+
+
+<h3>{% current_time '%m/%d/%Y, %H:%M:%S' %}</h3>
+    {% if post%}
+    <table>
+        <tr>
+            <td>Заголовок</td>
+            <td>Текст</td>
+            <td>Автор</td>
+            <td>Класс автора</td>
+            <td>Дата создания</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td><a href="/posts/{{ post.pk }}">{{ post.title|safe }}</a></td>
+            <td>{{ post.text|safe }}</td>
+            <td>{{ post.person|safe }}</td>
+            <td>{{ post.category|safe }}</td>
+            <td>{{ post.create_date|safe }}</td>
+        </tr>
+    </table>
+    {% else %}
+        <h2>
+            Поста нет!
+        </h2>
+    {% endif %}
 {% endblock content %}
