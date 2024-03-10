@@ -19,3 +19,12 @@ class CommentForm(forms.ModelForm):
             'text',
 
         ]
+
+
+class CommentUpdForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = [
+            'is_fix',
+
+        ]

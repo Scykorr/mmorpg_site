@@ -5,7 +5,7 @@
 {% load custom_tags %}
 
 {% block title %}
-Все мои посты
+Все мои Комментарии
 {% endblock title %}
  
 
@@ -13,40 +13,27 @@
     <h3>{% current_time '%m/%d/%Y, %H:%M:%S' %}</h3>
     <hr>
     {% if commentsown%}
+    <p>Комментарии</p>
     <table>
         {% for comment in commentsown %}
-            <tr><p>Комментарии</p></tr>
             <hr>
             <tr><p>Заголовок поста: {{ comment.post.title|safe }}</p></tr>
             <tr><p>Автор комментария: {{ comment.person|safe }}</p></tr>
             <tr><p>Текст комментария: {{ comment.text|safe }}</p></tr>
             <tr><p>Дата публикации: {{ comment.create_date|safe }}</p></tr>
             <tr><p>Статус принятия автором поста: {{ comment.is_fix|safe }}</p></tr>
+            <tr><p><a href="{{ comment.pk }}/update/">Опубликовать комментарий</a></p></tr>
+            <tr><p><a href="{{ comment.pk }}/delete/">Удалить комментарий</a></p></tr>
+            
             
             <hr>
         {% endfor %}
     </table>
     {% else %}
         <h2>
-            Постов нет!
+            Комментариев нет!
         </h2>
     {% endif %}
 
-    {% if page_obj.has_previous %}
-        <a href="?page=1">1</a>
-            {% if page_obj.previous_page_number != 1 %}
-                ...
-                <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
-            {% endif %}
-    {% endif %}
-
-        {{ page_obj.number }}
-
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
-            {% if paginator.num_pages != page_obj.next_page_number %}
-                ...
-                <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
-            {% endif %}
-    {% endif %}
+    
 {% endblock content %}

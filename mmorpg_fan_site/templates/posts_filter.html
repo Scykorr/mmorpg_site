@@ -12,17 +12,20 @@
 {% block content %}
     <h2>{{ attention }}</h2>
         <h2><a href="../create">Не можешь молчать? Поделись своими мыслями!</a></h2>
+        <h3><a href="comments/">Не забудь про комментарии!</a></h3>
     <h3>{% current_time '%m/%d/%Y, %H:%M:%S' %}</h3>
     <hr>
     {% if postsown%}
     <table>
         {% for post in postsown %}
-            <tr><a href="{{ post.pk }}">{{ post.title|safe }}</a></tr>
-            <tr>{{ post.text|safe }}</tr>
+            <tr><p>Заголовок: {{ post.title|safe }}</p></tr>
+            <tr>Текст: {{ post.text|safe }}</tr>
             <tr><p>Автор: {{ post.person|safe }}</p></tr>
             <tr><p>Категория объявления: {{ post.category|safe }}</p></tr>
             <tr><p>Дата создания: {{ post.create_date|safe }}</p></tr>
-            <tr><a href="{{ post.pk }}/delete">Удалить пост</a></tr>
+            <tr><p><a href="/{{ post.pk }}/update">Обновить пост</a></p></tr>
+            <tr><p><a href="/{{ post.pk }}/delete">Удалить пост</a></p></tr>
+            
             <hr>
         {% endfor %}
     </table>

@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm, CommentUpdForm
 from .models import Post, Comment, Person
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -89,7 +89,7 @@ class CommentCreate(LoginRequiredMixin, CreateView):
 
 class OwnCommentsList(ListView):
     model = Comment
-    ordering = 'post'
+    ordering = ['create_date']
     template_name = 'comments_filter.html'
     context_object_name = 'commentsown'
     paginate_by = 5
@@ -98,6 +98,8 @@ class OwnCommentsList(ListView):
 
         context = super().get_context_data(**kwargs)
         context['time_now'] = datetime.now()
+        comments = Comment.objects.filter(post__person=self.request.user.id)
+        context['commentsown'] = comments
         return context
     
 
@@ -106,11 +108,12 @@ class CommentDelete(LoginRequiredMixin, DeleteView):
     model = Comment
     template_name = 'comment_delete.html'
     success_url = reverse_lazy('comments_filter')
+    
 
 
 class OwnPostsList(ListView):
     model = Post
-    queryset = 'create_date'
+    ordering = 'create_date'
     template_name = 'posts_filter.html'
     context_object_name = 'postsown'
     paginate_by = 3
@@ -121,3 +124,10 @@ class OwnPostsList(ListView):
         context['time_now'] = datetime.now()
         context['postsown'] = Post.objects.filter(person=self.request.user.pk)
         return context
+    
+
+class CommentUpdate(LoginRequiredMixin, UpdateView):
+    # permission_required = ('post.change_post',)
+    form_class = CommentUpdForm
+    model = Comment
+    template_name = 'comment_update.html'
