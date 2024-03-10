@@ -15,22 +15,12 @@
 <h3>{% current_time '%m/%d/%Y, %H:%M:%S' %}</h3>
     {% if post%}
     <table>
-        <tr>
-            <td>Заголовок</td>
-            <td>Текст</td>
-            <td>Автор</td>
-            <td>Класс автора</td>
-            <td>Дата создания</td>
-            <td></td>
-        </tr>
-
-        <tr>
-            <td><a href="/posts/{{ post.pk }}">{{ post.title|safe }}</a></td>
-            <td>{{ post.text|safe }}</td>
-            <td>{{ post.person|safe }}</td>
-            <td>{{ post.category|safe }}</td>
-            <td>{{ post.create_date|safe }}</td>
-        </tr>
+        <tr><a href="/posts/{{ post.pk }}">{{ post.title|safe }}</a></tr>
+            <tr>{{ post.text|safe }}</tr>
+            <tr><p>Автор: {{ post.person|safe }}</p></tr>
+            <tr><p>Категория объявления: {{ post.category|safe }}</p></tr>
+            <tr><p>Дата создания: {{ post.create_date|safe }}</p></tr>
+            <tr><p>Оставить комментарий</p></tr>
     </table>
     {% else %}
         <h2>
