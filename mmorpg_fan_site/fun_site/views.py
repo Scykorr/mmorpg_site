@@ -4,9 +4,9 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .forms import PostForm
-from .models import Post
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from .forms import PostForm, CommentForm
+from .models import Post, Comment, Person
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 
 
 class PostsList(ListView):
@@ -34,27 +34,18 @@ class PostDetail(DetailView):
     context_object_name = 'post'
 
 
-# @login_required
-# def create_post(request):
-
-#     form = PostForm()
-
-#     if request.method == 'POST':
-#         form = PostForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return HttpResponseRedirect('/posts/')
-
-#     return render(request, 'post_edit.html', {'form': form})
-
-class PostCreate(PermissionRequiredMixin, CreateView):
-    permission_required = ('post.add_post',)
-    raise_exception = True
+class PostCreate(LoginRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'post_update.html'
 
     def form_valid(self, form):
+        post = form.save(commit=False)
+        if self.request.method == 'POST':
+             #form.instance.created_by = Person.objects.get(pk=self.request.user.pk)
+             #form.instance.created_by = self.request.user.pk
+             post.person_id = self.request.user.pk
+        post.save()
         return super().form_valid(form)
 
     # def get_success_url(self):
@@ -72,3 +63,14 @@ class PostDelete(PermissionRequiredMixin, DeleteView):
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
+
+
+class CommentCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('comment.add_comment',)
+    raise_exception = True
+    form_class = CommentForm
+    model = Comment
+    template_name = 'comment_update.html'
+
+    def form_valid(self, form):
+        return super().form_valid(form)

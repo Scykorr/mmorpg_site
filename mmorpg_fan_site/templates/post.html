@@ -15,7 +15,7 @@
 <h3>{% current_time '%m/%d/%Y, %H:%M:%S' %}</h3>
     {% if post%}
     <table>
-        <tr><a href="/posts/{{ post.pk }}">{{ post.title|safe }}</a></tr>
+        <tr><a href="{{ post.pk }}">{{ post.title|safe }}</a></tr>
             <tr>{{ post.text|safe }}</tr>
             <tr><p>Автор: {{ post.person|safe }}</p></tr>
             <tr><p>Категория объявления: {{ post.category|safe }}</p></tr>
