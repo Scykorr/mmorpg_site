@@ -1,6 +1,6 @@
 from django.urls import path
 # Импортируем созданное нами представление
-from .views import PostsList, PostDetail, PostCreate, PostDelete, PostUpdate, CommentCreate
+from .views import PostsList, PostDetail, PostCreate, PostDelete, PostUpdate, CommentCreate, OwnCommentsList
 
 
 urlpatterns = [
@@ -10,4 +10,5 @@ urlpatterns = [
     path('<int:pk>/update/',  PostUpdate.as_view(), name='post_update'),
     path('<int:pk>/delete/',  PostDelete.as_view(), name='post_delete'),
     path('<int:pk>/comment/',  CommentCreate.as_view(), name='comment_update'),
+    path('commfilter/',  OwnCommentsList.as_view(), name='comments_filter'),
 ]

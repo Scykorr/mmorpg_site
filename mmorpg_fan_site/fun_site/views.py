@@ -36,7 +36,7 @@ class PostDetail(DetailView):
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
-        comments = Comment.objects.filter(post_id=self.kwargs['pk'])
+        comments = Comment.objects.filter(post_id=self.kwargs['pk'], is_fix=True)
         context['comments'] = comments
         return context
 
@@ -86,3 +86,16 @@ class CommentCreate(PermissionRequiredMixin, CreateView):
         comment.save()
         return super().form_valid(form)
     
+
+class OwnCommentsList(ListView):
+    model = Comment
+    ordering = 'post'
+    template_name = 'comments_filter.html'
+    context_object_name = 'commentsown'
+    paginate_by = 5
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['time_now'] = datetime.now()
+        return context
