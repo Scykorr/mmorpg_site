@@ -12,8 +12,18 @@
 {% block content %}
     <h3>{% current_time '%m/%d/%Y, %H:%M:%S' %}</h3>
     <hr>
-    {% if commentsown%}
+    <form action="" method="get">
+        {{ filterset.form }}
+        <input type="submit" value="Найти" />
+    </form>
+
+    <button><a href="/postsfilter/comments/">Сбросить фильтр</a></button>
+    
+    {% if commentsown %}
     <p>Комментарии</p>
+
+    
+
     <table>
         {% for comment in commentsown %}
             <hr>

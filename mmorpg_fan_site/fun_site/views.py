@@ -7,6 +7,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .forms import PostForm, CommentForm, CommentUpdForm
 from .models import Post, Comment, Person
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django_filters import FilterSet
 
 
 class PostsList(ListView):
@@ -15,6 +16,7 @@ class PostsList(ListView):
     template_name = 'posts.html'
     context_object_name = 'posts'
     paginate_by = 5
+
 
     def get_context_data(self, **kwargs):
 
@@ -92,14 +94,24 @@ class OwnCommentsList(ListView):
     ordering = ['create_date']
     template_name = 'comments_filter.html'
     context_object_name = 'commentsown'
-    paginate_by = 5
+
+
+    def get_queryset(self):
+       queryset = Comment.objects.filter(post__person_id=self.request.user.id)
+       self.filterset = PostFilter(self.request.GET, queryset, request=self.request.user.id)
+       if self.request.GET:
+            return self.filterset.qs
+       return Comment.objects.none()
 
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
         context['time_now'] = datetime.now()
-        comments = Comment.objects.filter(post__person=self.request.user.id)
-        context['commentsown'] = comments
+        # comments = Comment.objects.filter(post__person=self.request.user.id)
+        # context['commentsown'] = comments
+        
+        
+        context['filterset'] = self.filterset
         return context
     
 
@@ -131,3 +143,15 @@ class CommentUpdate(LoginRequiredMixin, UpdateView):
     form_class = CommentUpdForm
     model = Comment
     template_name = 'comment_update.html'
+
+
+class PostFilter(FilterSet):
+    class Meta:
+        model = Comment
+        fields = [
+            'post'
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(PostFilter, self).__init__(*args, **kwargs)
+        self.filters['post'].queryset = Post.objects.filter(person_id=kwargs['request'])
