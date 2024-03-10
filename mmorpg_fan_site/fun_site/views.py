@@ -6,7 +6,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .forms import PostForm, CommentForm
 from .models import Post, Comment, Person
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class PostsList(ListView):
@@ -57,22 +57,22 @@ class PostCreate(LoginRequiredMixin, CreateView):
     # def get_success_url(self):
     #     return reverse('lawyer_detail', kwargs={'lawyer_slug': self.object.lawyer_slug})
 
-class PostUpdate(PermissionRequiredMixin, UpdateView):
-    permission_required = ('post.change_post',)
+class PostUpdate(LoginRequiredMixin, UpdateView):
+    # permission_required = ('post.change_post',)
     form_class = PostForm
     model = Post
     template_name = 'post_update.html'
 
 
-class PostDelete(PermissionRequiredMixin, DeleteView):
-    permission_required = ('post.delete_post',)
+class PostDelete(LoginRequiredMixin, DeleteView):
+    # permission_required = ('post.delete_post',)
     model = Post
     template_name = 'post_delete.html'
-    success_url = reverse_lazy('post_list')
+    success_url = reverse_lazy('posts_filter')
 
 
-class CommentCreate(PermissionRequiredMixin, CreateView):
-    permission_required = ('comment.add_comment',)
+class CommentCreate(LoginRequiredMixin, CreateView):
+    # permission_required = ('comment.add_comment',)
     raise_exception = True
     form_class = CommentForm
     model = Comment
@@ -98,4 +98,26 @@ class OwnCommentsList(ListView):
 
         context = super().get_context_data(**kwargs)
         context['time_now'] = datetime.now()
+        return context
+    
+
+class CommentDelete(LoginRequiredMixin, DeleteView):
+    # permission_required = ('comment.delete_comment',)
+    model = Comment
+    template_name = 'comment_delete.html'
+    success_url = reverse_lazy('comments_filter')
+
+
+class OwnPostsList(ListView):
+    model = Post
+    queryset = 'create_date'
+    template_name = 'posts_filter.html'
+    context_object_name = 'postsown'
+    paginate_by = 3
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['time_now'] = datetime.now()
+        context['postsown'] = Post.objects.filter(person=self.request.user.pk)
         return context
