@@ -137,16 +137,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [BASE_DIR / 'static']
-
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-# CKEDITOR_BASEPATH = 'static/ckeditor/ckeditor/'
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 
@@ -244,7 +238,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = "fedos.py"
-EMAIL_HOST_PASSWORD = "A446256162a"
+EMAIL_HOST_PASSWORD = ""
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 

@@ -56,25 +56,20 @@ class PostCreate(LoginRequiredMixin, CreateView):
         post.save()
         return super().form_valid(form)
 
-    # def get_success_url(self):
-    #     return reverse('lawyer_detail', kwargs={'lawyer_slug': self.object.lawyer_slug})
 
 class PostUpdate(LoginRequiredMixin, UpdateView):
-    # permission_required = ('post.change_post',)
     form_class = PostForm
     model = Post
     template_name = 'post_update.html'
 
 
 class PostDelete(LoginRequiredMixin, DeleteView):
-    # permission_required = ('post.delete_post',)
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('posts_filter')
 
 
 class CommentCreate(LoginRequiredMixin, CreateView):
-    # permission_required = ('comment.add_comment',)
     raise_exception = True
     form_class = CommentForm
     model = Comment
@@ -107,8 +102,7 @@ class OwnCommentsList(LoginRequiredMixin, ListView):
 
         context = super().get_context_data(**kwargs)
         context['time_now'] = datetime.now()
-        # comments = Comment.objects.filter(post__person=self.request.user.id)
-        # context['commentsown'] = comments
+
         
         
         context['filterset'] = self.filterset
@@ -116,7 +110,6 @@ class OwnCommentsList(LoginRequiredMixin, ListView):
     
 
 class CommentDelete(LoginRequiredMixin, DeleteView):
-    # permission_required = ('comment.delete_comment',)
     model = Comment
     template_name = 'comment_delete.html'
     success_url = reverse_lazy('comments_filter')
@@ -139,7 +132,6 @@ class OwnPostsList(LoginRequiredMixin, ListView):
     
 
 class CommentUpdate(LoginRequiredMixin, UpdateView):
-    # permission_required = ('post.change_post',)
     form_class = CommentUpdForm
     model = Comment
     template_name = 'comment_update.html'
