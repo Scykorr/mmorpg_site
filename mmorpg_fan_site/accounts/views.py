@@ -1,58 +1,81 @@
-from django.shortcuts import render
-
-from django.contrib.auth.models import User
-from django.views.generic.edit import CreateView
-from .forms import SignUpForm
-
-
-class SignUp(CreateView):
-    model = User
-    form_class = SignUpForm
-    success_url = '/accounts/login'
-    template_name = 'registration/signup.html'
-
-
-
-from django.views.generic import CreateView
-from django.urls import reverse_lazy
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes
-from django.contrib.sites.models import Site
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.views.generic import UpdateView, FormView
+from django.shortcuts import get_object_or_404
+from .models import UsersAuth
+from .forms import EditProfile, Auth_codeForm
+import random
 
-from .forms import UserRegisterForm
-from ..services.mixins import UserIsNotAuthenticated
+
+code_not_correct = str('')
 
 
-class UserRegisterView(UserIsNotAuthenticated, CreateView):
-    """
-    Представление регистрации на сайте с формой регистрации
-    """
-    form_class = UserRegisterForm
-    success_url = reverse_lazy('home')
-    template_name = 'system/registration/user_register.html'
+class AccountProfile(LoginRequiredMixin, FormView):
+    template_name = 'allauth/profile.html'
+    form_class = Auth_codeForm
+
+    def dispatch(self, request, *args, **kwargs):
+        if UsersAuth.objects.filter(user=self.request.user).exists():
+            return super().dispatch(request, *args, **kwargs)
+        return HttpResponseRedirect(reverse('auth_code'))
+
+    def form_valid(self, form, **kwargs):
+        global code_not_correct
+        if form.cleaned_data['code'] == UsersAuth.objects.get(user=self.request.user).code:
+            Group.objects.get(name='common users').user_set.add(
+                self.request.user)
+        else:
+            code_not_correct = "Введен неверный код подтверждения"
+        return HttpResponseRedirect(reverse('account_profile'))
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Регистрация на сайте'
+        context = super(AccountProfile, self).get_context_data(**kwargs)
+        context['code_not_correct'] = code_not_correct
+        if self.request.user.groups.filter(name='common users').exists():
+            context['auth'] = True
+        else:
+            context['auth'] = False
         return context
 
-    def form_valid(self, form):
-        user = form.save(commit=False)
-        user.is_active = False
-        user.save()
-        # Функционал для отправки письма и генерации токена
-        token = default_token_generator.make_token(user)
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        activation_url = reverse_lazy('confirm_email', kwargs={'uidb64': uid, 'token': token})
-        current_site = Site.objects.get_current().domain
-        send_mail(
-            'Подтвердите свой электронный адрес',
-            f'Пожалуйста, перейдите по следующей ссылке, чтобы подтвердить свой адрес электронной почты: http://{current_site}{activation_url}',
-            'service.notehunter@gmail.com',
-            [user.email],
-            fail_silently=False,
-        )
-        return redirect('email_confirmation_sent')
+
+@login_required
+def auth_code(request):
+    global code_not_correct
+    code_not_correct = ""
+
+    if not UsersAuth.objects.filter(user=request.user).exists():
+        add_user = UsersAuth()
+        add_user.user = request.user
+        add_user.save()
+
+    user = UsersAuth.objects.get(user=request.user)
+    user.code = random.randint(1000, 9999)
+    user.save()
+    send_mail(
+        subject=f'MMORPG Billboard: подтверждение e-mail',
+        message=f'Доброго дня, {request.user}! Для подтверждения регистрации, введите код {user.code} на '
+                f'странице регистрации\nhttp://127.0.0.1:8000/accounts/profile',
+        from_email='nogerovarthur24@yandex.ru',
+        recipient_list=[request.user.email],
+    )
+    return HttpResponseRedirect(reverse('account_profile'))
+
+
+class UpdateProfile(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = EditProfile
+    success_url = '/accounts/profile'
+    template_name = 'allauth/update.html'
+
+    def setup(self, request, *args, **kwargs):
+        self.user_id = request.user.pk
+        return super().setup(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        if not queryset:
+            queryset = self.get_queryset()
+        return get_object_or_404(queryset, pk=self.user_id)
