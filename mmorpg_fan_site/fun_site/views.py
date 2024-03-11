@@ -89,7 +89,7 @@ class CommentCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
     
 
-class OwnCommentsList(ListView):
+class OwnCommentsList(LoginRequiredMixin, ListView):
     model = Comment
     ordering = ['create_date']
     template_name = 'comments_filter.html'
@@ -123,7 +123,7 @@ class CommentDelete(LoginRequiredMixin, DeleteView):
     
 
 
-class OwnPostsList(ListView):
+class OwnPostsList(LoginRequiredMixin, ListView):
     model = Post
     ordering = 'create_date'
     template_name = 'posts_filter.html'
